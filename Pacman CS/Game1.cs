@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using System.Collections.Generic;
+
 namespace Pacman_CS
 {
     /// <summary>
@@ -12,10 +14,20 @@ namespace Pacman_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        public static int screenWidth = 1000;
+        public static int screenHeight = 850;
+
+        private State state;
+        private State nextState;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            this.Window.Title = "PACMAN";
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -27,7 +39,6 @@ namespace Pacman_CS
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -40,7 +51,10 @@ namespace Pacman_CS
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            state = new MenuState(this, Content);
+            state.LoadContent();
+
+            nextState = null;
         }
 
         /// <summary>
@@ -59,10 +73,7 @@ namespace Pacman_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // TODO: Add your update logic here
+            state.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -74,8 +85,11 @@ namespace Pacman_CS
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            state.Draw(gameTime, spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
