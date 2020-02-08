@@ -7,31 +7,33 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Pacman_CS
 {
-    class GameState
+    class GameState : State
     {
-        ContentManager content;
+        private Texture2D player;
+        public Level level;
 
-
-
-        public GameState(ContentManager Content)
+        public GameState(Game1 game, ContentManager content) : base(game, content)
         {
-            content = Content;
+            level = new Level(content);
+
+            LoadContent();
+        }
+
+        public override void LoadContent()
+        {
+            //player = content.Load<Texture2D>("pacman32");
+        }
+
+        public override void Update(GameTime gameTime)
+        {
             
-
-
         }
 
-       
-
-
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            level.Draw(spriteBatch);
 
-        }
-
-        public void Update()
-        {
-
+            //spriteBatch.Draw(player, new Vector2(50, 50));
         }
     }
 }

@@ -73,6 +73,14 @@ namespace Pacman_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (nextState != null)
+            {
+                state = nextState;
+                state.LoadContent();
+
+                nextState = null;
+            }
+
             state.Update(gameTime);
 
             base.Update(gameTime);
@@ -92,6 +100,11 @@ namespace Pacman_CS
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public void ChangeState(State state)
+        {
+            nextState = state;
         }
     }
 }

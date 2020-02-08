@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 
-
 namespace Pacman_CS
 {
     class MenuState : State
@@ -54,7 +53,7 @@ namespace Pacman_CS
                         switch (button.getText())
                         {
                             case "New Game":
-
+                                game.ChangeState(new GameState(game, content));
                                 break;
                             case "Options":
                                 System.Diagnostics.Debug.WriteLine("Options Button Clicked");
