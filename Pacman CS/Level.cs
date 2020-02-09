@@ -12,13 +12,15 @@ namespace Pacman_CS
         public List<Tile> tiles = new List<Tile>();
         private Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
 
-        public Player player;
+        public Vector2 playerStartingLocation;
 
         public ContentManager content;
 
         public Level(ContentManager _content)
         {
             content = _content;
+
+            playerStartingLocation = Vector2.Zero;
 
             LoadContent();
 
@@ -36,8 +38,6 @@ namespace Pacman_CS
             {
                 spriteBatch.Draw(tileTextures[tile.type], tile.position);
             }
-
-            player.Draw(spriteBatch);
         }
 
         public void LoadContent()
@@ -65,7 +65,7 @@ namespace Pacman_CS
                     else if(level[i][j] == 'S')
                     {
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
-                        player = new Player(content, 32 * j, 32 * i);
+                        playerStartingLocation = new Vector2(32 * j, 32 * i);
                     }
                     else
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
