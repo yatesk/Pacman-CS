@@ -29,11 +29,30 @@ namespace Pacman_CS
 
         public void Update()
         {
+        }
 
+        public Tile CheckCollision(Rectangle playerCoords)
+        {
+            Rectangle playerBoundingBox = playerCoords;
+
+            for (int i = 0; i < tiles.Count; i++)
+            {
+                if (tiles[i].type == Tile.TileType.Wall)
+                { 
+                    Rectangle tileBoundingBox = new Rectangle((int)tiles[i].position.X, (int)tiles[i].position.Y, tiles[i].width, tiles[i].height);
+
+                    if (playerBoundingBox.Intersects(tileBoundingBox))
+                    {
+                        return tiles[i];
+                    }
+                }
+            }
+            return null;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            //System.Diagnostics.Debug.WriteLine(tiles.Count);
             foreach (var tile in tiles)
             {
                 spriteBatch.Draw(tileTextures[tile.type], tile.position);

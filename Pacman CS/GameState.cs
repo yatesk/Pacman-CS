@@ -27,7 +27,6 @@ namespace Pacman_CS
 
         public override void LoadContent()
         {
-            //player = content.Load<Texture2D>("pacman32");
         }
 
         public override void Update(GameTime gameTime)
@@ -36,26 +35,94 @@ namespace Pacman_CS
 
             if (keyboardState.IsKeyDown(Keys.Left))
             {
-                player.velocity.X = -playerSpeed;
-                player.velocity.Y = 0;
+                player.nextDirection = "left";
+
             }
             else if (keyboardState.IsKeyDown(Keys.Right))
             {
-                player.velocity.X = playerSpeed;
-                player.velocity.Y = 0;
+                player.nextDirection = "right";
+
             }
             else if (keyboardState.IsKeyDown(Keys.Up))
             {
-                player.velocity.X = 0;
-                player.velocity.Y = -playerSpeed;
+                player.nextDirection = "up";
+
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
             {
-                player.velocity.X = 0;
-                player.velocity.Y = playerSpeed;
+                player.nextDirection = "down";
+
             }
 
+            float startingVelocityX = player.velocity.X;
+            float startingVelocityY = player.velocity.Y;
+            Vector2 startingPosition = player.position;
+
             player.Update();
+
+            System.Diagnostics.Debug.WriteLine(player.nextDirection);
+
+            Tile collisionTile = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
+
+            if (collisionTile == null)
+            {
+                player.nextDirection = "none";
+            }
+            else
+            {
+                player.velocity.X = startingVelocityX;
+                player.velocity.Y = startingVelocityY;
+                player.position = startingPosition;
+
+                player.position += player.velocity;
+
+                Tile collisionTile2 = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
+
+                if (collisionTile2 != null)
+                {
+                    // right
+                    if (player.velocity.X > 0)
+                    {
+                        player.position.X = collisionTile2.position.X - player.size;
+
+                        if (player.nextDirection == "right")
+                        {
+                            player.nextDirection = "none";
+                        }
+
+                    }
+                    // left
+                    else if (player.velocity.X < 0)
+                    {
+                        player.position.X = collisionTile2.position.X + collisionTile2.width;
+
+                        if (player.nextDirection == "left")
+                        {
+                            player.nextDirection = "none";
+                        }
+                    }
+                    // down
+                    else if (player.velocity.Y > 0)
+                    {
+                        player.position.Y = collisionTile2.position.Y - player.size;
+
+                        if (player.nextDirection == "down")
+                        {
+                            player.nextDirection = "none";
+                        }
+                    }
+                    // up
+                    else if (player.velocity.Y < 0)
+                    {
+                        player.position.Y = collisionTile2.position.Y + collisionTile2.width;
+
+                        if (player.nextDirection == "up")
+                        {
+                            player.nextDirection = "none";
+                        }
+                    }
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -63,8 +130,6 @@ namespace Pacman_CS
             level.Draw(spriteBatch);
 
             player.Draw(spriteBatch);
-
-            //spriteBatch.Draw(player, new Vector2(50, 50));
         }
     }
 }
