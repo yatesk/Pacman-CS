@@ -17,10 +17,15 @@ namespace Pacman_CS
 
         KeyboardState keyboardState;
 
+        int score;
+
         public GameState(Game1 game, ContentManager content) : base(game, content)
         {
             level = new Level(content);
             player = new Player(content, new Vector2(level.playerStartingLocation.X, level.playerStartingLocation.Y));
+
+            score = 0;
+
 
             LoadContent();
         }
@@ -35,22 +40,22 @@ namespace Pacman_CS
 
             if (keyboardState.IsKeyDown(Keys.Left))
             {
-                player.nextDirection = "left";
+                player.nextDirection = Player.Directions.Left;
 
             }
             else if (keyboardState.IsKeyDown(Keys.Right))
             {
-                player.nextDirection = "right";
+                player.nextDirection = Player.Directions.Right;
 
             }
             else if (keyboardState.IsKeyDown(Keys.Up))
             {
-                player.nextDirection = "up";
+                player.nextDirection = Player.Directions.Up;
 
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
             {
-                player.nextDirection = "down";
+                player.nextDirection = Player.Directions.Down;
 
             }
 
@@ -60,13 +65,14 @@ namespace Pacman_CS
 
             player.Update();
 
-            System.Diagnostics.Debug.WriteLine(player.nextDirection);
+            System.Diagnostics.Debug.WriteLine(score);
 
-            Tile collisionTile = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
-
-            if (collisionTile == null)
+            
+            // Check new position collision
+            // If there is a collision, use old velocity and position
+            if (level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size)) == null)
             {
-                player.nextDirection = "none";
+                player.nextDirection = Player.Directions.None;
             }
             else
             {
@@ -76,52 +82,58 @@ namespace Pacman_CS
 
                 player.position += player.velocity;
 
-                Tile collisionTile2 = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
+                Tile collisionTile = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
 
-                if (collisionTile2 != null)
+                if (collisionTile != null)
                 {
                     // right
                     if (player.velocity.X > 0)
                     {
-                        player.position.X = collisionTile2.position.X - player.size;
+                        player.position.X = collisionTile.position.X - player.size;
 
-                        if (player.nextDirection == "right")
+                        if (player.nextDirection == Player.Directions.Right)
                         {
-                            player.nextDirection = "none";
+                            player.nextDirection = Player.Directions.None;
                         }
 
                     }
                     // left
                     else if (player.velocity.X < 0)
                     {
-                        player.position.X = collisionTile2.position.X + collisionTile2.width;
+                        player.position.X = collisionTile.position.X + collisionTile.width;
 
-                        if (player.nextDirection == "left")
+                        if (player.nextDirection == Player.Directions.Left)
                         {
-                            player.nextDirection = "none";
+                            player.nextDirection = Player.Directions.None;
                         }
                     }
                     // down
                     else if (player.velocity.Y > 0)
                     {
-                        player.position.Y = collisionTile2.position.Y - player.size;
+                        player.position.Y = collisionTile.position.Y - player.size;
 
-                        if (player.nextDirection == "down")
+                        if (player.nextDirection == Player.Directions.Down)
                         {
-                            player.nextDirection = "none";
+                            player.nextDirection = Player.Directions.None;
                         }
                     }
                     // up
                     else if (player.velocity.Y < 0)
                     {
-                        player.position.Y = collisionTile2.position.Y + collisionTile2.width;
+                        player.position.Y = collisionTile.position.Y + collisionTile.width;
 
-                        if (player.nextDirection == "up")
+                        if (player.nextDirection == Player.Directions.Up)
                         {
-                            player.nextDirection = "none";
+                            player.nextDirection = Player.Directions.None;
                         }
                     }
                 }
+            }
+
+
+            if (level.CheckPelletCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size)))
+            {
+                score += 1;
             }
         }
 

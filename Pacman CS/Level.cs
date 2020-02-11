@@ -12,9 +12,14 @@ namespace Pacman_CS
         public List<Tile> tiles = new List<Tile>();
         private Dictionary<Tile.TileType, Texture2D> tileTextures = new Dictionary<Tile.TileType, Texture2D>();
 
+        public List<Pellet> pellets = new List<Pellet>();
+
         public Vector2 playerStartingLocation;
 
         public ContentManager content;
+
+        public Texture2D pelletTexture;
+        public Texture2D powerPelletTexture;
 
         public Level(ContentManager _content)
         {
@@ -50,6 +55,27 @@ namespace Pacman_CS
             return null;
         }
 
+        public bool CheckPelletCollision(Rectangle playerCoords)
+        {
+            Rectangle playerBoundingBox = playerCoords;
+
+            foreach (var pellet in pellets)
+            {
+                Rectangle tileBoundingBox = new Rectangle((int)pellet.position.X, (int)pellet.position.Y, pellet.width, pellet.height);
+
+                    if (playerBoundingBox.Intersects(tileBoundingBox))
+                    {
+                        pellets.Remove(pellet);
+                    return true;
+                       
+                    }
+                
+            }
+            return false;
+        
+          
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             //System.Diagnostics.Debug.WriteLine(tiles.Count);
@@ -57,12 +83,28 @@ namespace Pacman_CS
             {
                 spriteBatch.Draw(tileTextures[tile.type], tile.position);
             }
+
+            foreach (var pellet in pellets)
+            {
+                if (pellet.type == Pellet.PelletType.Pellet)
+                {
+                    spriteBatch.Draw(pelletTexture, pellet.position);
+                }
+                else if (pellet.type == Pellet.PelletType.PowerPellet)
+                {
+                    spriteBatch.Draw(powerPelletTexture, pellet.position);
+                }
+            }         
         }
 
         public void LoadContent()
         {
             tileTextures.Add(Tile.TileType.Wall, content.Load<Texture2D>("wall1"));
             tileTextures.Add(Tile.TileType.Open, content.Load<Texture2D>("open"));
+
+            powerPelletTexture = content.Load<Texture2D>("powerPellet");
+            pelletTexture = content.Load<Texture2D>("pellet");
+
         }
 
         public void LoadLevel()
@@ -81,13 +123,24 @@ namespace Pacman_CS
                 {
                     if (level[i][j] == '*')
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Wall));
-                    else if(level[i][j] == 'S')
+                    else if (level[i][j] == 'S')
                     {
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
                         playerStartingLocation = new Vector2(32 * j, 32 * i);
                     }
-                    else
+                    else if (level[i][j] == 'P')
+                    {
+                        // middle - size / 2
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
+                        pellets.Add(new Pellet(new Vector2(32 * j + 8, 32 * i + 8), 16, 16, Pellet.PelletType.PowerPellet));
+                    }
+                    else
+                    {
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
+
+                        
+                        pellets.Add(new Pellet(new Vector2(32 * j + 12, 32 * i + 12), 8, 8, Pellet.PelletType.Pellet));
+                    }
                 }
         }
     }

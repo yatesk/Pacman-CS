@@ -48,6 +48,7 @@
     <Compile Include="Level.cs" />
     <Compile Include="MenuState.cs" />
     <Compile Include="OptionsState.cs" />
+    <Compile Include="Pellet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
