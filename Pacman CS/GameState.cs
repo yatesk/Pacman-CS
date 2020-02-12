@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -12,6 +10,7 @@ namespace Pacman_CS
     {
         private Player player;
         public Level level;
+        public List<Ghost> ghosts = new List<Ghost>();
 
         private int playerSpeed = 2;
 
@@ -24,8 +23,13 @@ namespace Pacman_CS
             level = new Level(content);
             player = new Player(content, new Vector2(level.playerStartingLocation.X, level.playerStartingLocation.Y));
 
-            score = 0;
 
+            foreach (var position in level.ghostStartingLocations)
+            {
+                ghosts.Add(new Ghost(content, position));
+            }
+
+            score = 0;
 
             LoadContent();
         }
@@ -130,6 +134,12 @@ namespace Pacman_CS
                 }
             }
 
+            // move?
+            foreach (var ghost in ghosts)
+            {
+                ghost.Update();
+                System.Diagnostics.Debug.WriteLine("FDd");
+            }
 
             if (level.CheckPelletCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size)))
             {
@@ -140,8 +150,12 @@ namespace Pacman_CS
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             level.Draw(spriteBatch);
-
             player.Draw(spriteBatch);
+
+            foreach (var ghost in ghosts)
+            {
+                ghost.Draw(spriteBatch);
+            }
         }
     }
 }

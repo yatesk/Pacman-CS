@@ -5,34 +5,32 @@ using System;
 
 namespace Pacman_CS
 {
-    public class Player
+    public class Ghost
     {
         public Vector2 position;
         public Vector2 velocity;
-        public Texture2D[] image = new Texture2D[4];
+        public Texture2D[] image = new Texture2D[2];
         public int size = 32;
 
         public enum Directions { Up, Down, Left, Right, None };
         public Directions nextDirection = Directions.None;
-        //public string nextDirection;
-        private int playerSpeed = 2;
+
+        private int ghostSpeed = 2;
 
         private int frameCount = 0;
         private int spriteIndex = 0;
 
+        // Pacman can eat ghost if ghost is scared.
+        public bool scared = false;
 
         public Vector2 origin;
 
-
-        public Player(ContentManager _content, Vector2 _startingLocation)
+        public Ghost(ContentManager _content, Vector2 _startingLocation)
         {
-            image[0] = _content.Load<Texture2D>("pacman1");
-            image[1] = _content.Load<Texture2D>("pacman2");
-            image[2] = _content.Load<Texture2D>("pacman3");
-            image[3] = _content.Load<Texture2D>("pacman2");
+            image[0] = _content.Load<Texture2D>("ghost1");
+            image[1] = _content.Load<Texture2D>("ghost2");
 
 
-            //image = _content.Load<Texture2D>("pacman2");
             position = _startingLocation;
             velocity = new Vector2(0, 0);
 
@@ -45,41 +43,37 @@ namespace Pacman_CS
         public void Update()
         {
 
-            if (nextDirection == Directions.Left)
-            {
-                velocity.X = -playerSpeed;
-                velocity.Y = 0;
-            }
-            else if (nextDirection == Directions.Right)
-            {
-                velocity.X = playerSpeed;
-                velocity.Y = 0;
-            }
-            else if (nextDirection == Directions.Up)
-            {
-                velocity.Y = -playerSpeed;
-                velocity.X = 0;
-            }
-            else if (nextDirection == Directions.Down)
-            {
-                velocity.Y = playerSpeed;
-                velocity.X = 0;
-            }
+            //if (nextDirection == Directions.Left)
+            //{
+            //    velocity.X = -playerSpeed;
+            //    velocity.Y = 0;
+            //}
+            //else if (nextDirection == Directions.Right)
+            //{
+            //    velocity.X = playerSpeed;
+            //    velocity.Y = 0;
+            //}
+            //else if (nextDirection == Directions.Up)
+            //{
+            //    velocity.Y = -playerSpeed;
+            //    velocity.X = 0;
+            //}
+            //else if (nextDirection == Directions.Down)
+            //{
+            //    velocity.Y = playerSpeed;
+            //    velocity.X = 0;
+            //}
 
-            position += velocity;
-
+            //position += velocity;
 
             // refactor animations
             frameCount += 1;
 
-            if (frameCount % 40 < 10)
+            if (frameCount % 60 < 30)
                 spriteIndex = 0;
-            else if (frameCount % 40 < 20)
+            else if (frameCount % 60 < 60)
                 spriteIndex = 1;
-            else if (frameCount % 40 < 30)
-                spriteIndex = 2;
-            else
-                spriteIndex = 3;
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -94,7 +88,7 @@ namespace Pacman_CS
             }
             else if (velocity.Y > 0)
             {
-                spriteBatch.Draw(image[spriteIndex], position + new Vector2(16, 16), null, Color.White, (float)(90 * (Math.PI/180)), origin, 1.0f, SpriteEffects.None, 0);
+                spriteBatch.Draw(image[spriteIndex], position + new Vector2(16, 16), null, Color.White, (float)(90 * (Math.PI / 180)), origin, 1.0f, SpriteEffects.None, 0);
 
             }
             else if (velocity.Y < 0)

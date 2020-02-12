@@ -44,6 +44,7 @@
     <Compile Include="Button.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Ghost.cs" />
     <Compile Include="HighScoresState.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MenuState.cs" />

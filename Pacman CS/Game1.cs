@@ -14,7 +14,7 @@ namespace Pacman_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public static int screenWidth = 1000;
+        public static int screenWidth = 992;  // 32 pixles by 31
         public static int screenHeight = 850;
 
         private State state;

@@ -15,6 +15,7 @@ namespace Pacman_CS
         public List<Pellet> pellets = new List<Pellet>();
 
         public Vector2 playerStartingLocation;
+        public List<Vector2> ghostStartingLocations = new List<Vector2>();
 
         public ContentManager content;
 
@@ -28,7 +29,6 @@ namespace Pacman_CS
             playerStartingLocation = Vector2.Zero;
 
             LoadContent();
-
             LoadLevel();
         }
 
@@ -66,14 +66,10 @@ namespace Pacman_CS
                     if (playerBoundingBox.Intersects(tileBoundingBox))
                     {
                         pellets.Remove(pellet);
-                    return true;
-                       
+                        return true; 
                     }
-                
             }
             return false;
-        
-          
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -104,11 +100,11 @@ namespace Pacman_CS
 
             powerPelletTexture = content.Load<Texture2D>("powerPellet");
             pelletTexture = content.Load<Texture2D>("pellet");
-
         }
 
         public void LoadLevel()
         {
+            int topMargin = 32;
             String line;
             List<char[]> level = new List<char[]>();
             FileStream fsSource = new FileStream("level1.txt", FileMode.Open, FileAccess.Read);
@@ -122,24 +118,28 @@ namespace Pacman_CS
                 for (int j = 0; j < level[i].Length; j++)
                 {
                     if (level[i][j] == '*')
-                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Wall));
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Wall));
                     else if (level[i][j] == 'S')
                     {
-                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
-                        playerStartingLocation = new Vector2(32 * j, 32 * i);
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
+                        playerStartingLocation = new Vector2(32 * j, 32 * i + topMargin);
                     }
                     else if (level[i][j] == 'P')
                     {
                         // middle - size / 2
-                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
-                        pellets.Add(new Pellet(new Vector2(32 * j + 8, 32 * i + 8), 16, 16, Pellet.PelletType.PowerPellet));
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
+                        pellets.Add(new Pellet(new Vector2(32 * j + 8, 32 * i + 8 + topMargin), 16, 16, Pellet.PelletType.PowerPellet));
+                    }
+                    else if (level[i][j] == 'G')
+                    {
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
+                        ghostStartingLocations.Add(new Vector2(32 * j, 32 * i + topMargin));
                     }
                     else
                     {
-                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i), 32, 32, Tile.TileType.Open));
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
 
-                        
-                        pellets.Add(new Pellet(new Vector2(32 * j + 12, 32 * i + 12), 8, 8, Pellet.PelletType.Pellet));
+                        pellets.Add(new Pellet(new Vector2(32 * j + 12, 32 * i + 12 + topMargin), 8, 8, Pellet.PelletType.Pellet));
                     }
                 }
         }
