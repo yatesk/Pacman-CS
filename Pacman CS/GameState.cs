@@ -11,8 +11,7 @@ namespace Pacman_CS
         private Player player;
         public Level level;
         public List<Ghost> ghosts = new List<Ghost>();
-
-        private int playerSpeed = 2;
+        public ScoreBoard scoreBoard;
 
         KeyboardState keyboardState;
 
@@ -28,6 +27,9 @@ namespace Pacman_CS
             {
                 ghosts.Add(new Ghost(content, position));
             }
+
+
+            scoreBoard = new ScoreBoard(content, 1);
 
             score = 0;
 
@@ -45,22 +47,18 @@ namespace Pacman_CS
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 player.nextDirection = Player.Directions.Left;
-
             }
             else if (keyboardState.IsKeyDown(Keys.Right))
             {
                 player.nextDirection = Player.Directions.Right;
-
             }
             else if (keyboardState.IsKeyDown(Keys.Up))
             {
                 player.nextDirection = Player.Directions.Up;
-
             }
             else if (keyboardState.IsKeyDown(Keys.Down))
             {
                 player.nextDirection = Player.Directions.Down;
-
             }
 
             float startingVelocityX = player.velocity.X;
@@ -70,7 +68,6 @@ namespace Pacman_CS
             player.Update();
 
             System.Diagnostics.Debug.WriteLine(score);
-
             
             // Check new position collision
             // If there is a collision, use old velocity and position
@@ -143,7 +140,7 @@ namespace Pacman_CS
 
             if (level.CheckPelletCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size)))
             {
-                score += 1;
+                scoreBoard.player1Score += 1;
             }
         }
 
@@ -156,6 +153,8 @@ namespace Pacman_CS
             {
                 ghost.Draw(spriteBatch);
             }
+
+            scoreBoard.Draw(spriteBatch);
         }
     }
 }

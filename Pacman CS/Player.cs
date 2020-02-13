@@ -26,10 +26,10 @@ namespace Pacman_CS
 
         public Player(ContentManager _content, Vector2 _startingLocation)
         {
-            image[0] = _content.Load<Texture2D>("pacman1");
-            image[1] = _content.Load<Texture2D>("pacman2");
-            image[2] = _content.Load<Texture2D>("pacman3");
-            image[3] = _content.Load<Texture2D>("pacman2");
+            image[0] = _content.Load<Texture2D>("pacman1-1");
+            image[1] = _content.Load<Texture2D>("pacman1-2");
+            image[2] = _content.Load<Texture2D>("pacman1-3");
+            image[3] = _content.Load<Texture2D>("pacman1-2");
 
 
             //image = _content.Load<Texture2D>("pacman2");
@@ -37,7 +37,6 @@ namespace Pacman_CS
             velocity = new Vector2(0, 0);
 
             nextDirection = Directions.None;
-
 
             this.origin = new Vector2(image[0].Width / 2f, image[0].Height / 2f);
         }
