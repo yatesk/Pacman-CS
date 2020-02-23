@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Pacman_CS
@@ -37,7 +37,7 @@ namespace Pacman_CS
             nextDirection = Directions.None;
 
 
-            this.origin = new Vector2(image[0].Width / 2f, image[0].Height / 2f);
+            origin = new Vector2(image[0].Width / 2f, image[0].Height / 2f);
         }
 
         public void Update()
@@ -65,6 +65,8 @@ namespace Pacman_CS
             //}
 
             //position += velocity;
+
+
 
             // refactor animations
             frameCount += 1;

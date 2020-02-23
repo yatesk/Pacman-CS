@@ -20,19 +20,15 @@ namespace Pacman_CS
         private int frameCount = 0;
         private int spriteIndex = 0;
 
-
         public Vector2 origin;
 
-
-        public Player(ContentManager _content, Vector2 _startingLocation)
+        public Player(ContentManager _content, Vector2 _startingLocation, string pacmanNumber)
         {
-            image[0] = _content.Load<Texture2D>("pacman1-1");
-            image[1] = _content.Load<Texture2D>("pacman1-2");
-            image[2] = _content.Load<Texture2D>("pacman1-3");
-            image[3] = _content.Load<Texture2D>("pacman1-2");
+            image[0] = _content.Load<Texture2D>(pacmanNumber + "-1");
+            image[1] = _content.Load<Texture2D>(pacmanNumber + "-2");
+            image[2] = _content.Load<Texture2D>(pacmanNumber + "-3");
+            image[3] = _content.Load<Texture2D>(pacmanNumber + "-2");
 
-
-            //image = _content.Load<Texture2D>("pacman2");
             position = _startingLocation;
             velocity = new Vector2(0, 0);
 
@@ -43,7 +39,6 @@ namespace Pacman_CS
 
         public void Update()
         {
-
             if (nextDirection == Directions.Left)
             {
                 velocity.X = -playerSpeed;
@@ -66,7 +61,6 @@ namespace Pacman_CS
             }
 
             position += velocity;
-
 
             // refactor animations
             frameCount += 1;

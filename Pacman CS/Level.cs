@@ -14,7 +14,8 @@ namespace Pacman_CS
 
         public List<Pellet> pellets = new List<Pellet>();
 
-        public Vector2 playerStartingLocation;
+        public Vector2 player1StartingLocation; 
+        public Vector2 player2StartingLocation;
         public List<Vector2> ghostStartingLocations = new List<Vector2>();
 
         public ContentManager content;
@@ -26,7 +27,8 @@ namespace Pacman_CS
         {
             content = _content;
 
-            playerStartingLocation = Vector2.Zero;
+            player1StartingLocation = Vector2.Zero;
+            player2StartingLocation = Vector2.Zero;
 
             LoadContent();
             LoadLevel();
@@ -74,7 +76,6 @@ namespace Pacman_CS
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //System.Diagnostics.Debug.WriteLine(tiles.Count);
             foreach (var tile in tiles)
             {
                 spriteBatch.Draw(tileTextures[tile.type], tile.position);
@@ -119,10 +120,15 @@ namespace Pacman_CS
                 {
                     if (level[i][j] == '*')
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Wall));
-                    else if (level[i][j] == 'S')
+                    else if (level[i][j] == 'A')
                     {
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
-                        playerStartingLocation = new Vector2(32 * j, 32 * i + topMargin);
+                        player1StartingLocation = new Vector2(32 * j, 32 * i + topMargin);
+                    }
+                    else if (level[i][j] == 'B')
+                    {
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
+                        player2StartingLocation = new Vector2(32 * j, 32 * i + topMargin);
                     }
                     else if (level[i][j] == 'P')
                     {

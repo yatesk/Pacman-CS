@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Content;
 
 namespace Pacman_CS
 {
@@ -53,8 +52,11 @@ namespace Pacman_CS
                         switch (button.getText())
                         {
                             case "New Game":
-                                game.ChangeState(new GameState(game, content));
-                                break;
+                                buttons.Remove(button);
+                                buttons.Add(new Button("1player", new Vector2((Game1.screenWidth / 2) - 125, (Game1.screenHeight / 2) - 100), content));
+                                buttons.Add(new Button("2player", new Vector2((Game1.screenWidth / 2), (Game1.screenHeight / 2) - 100), content));
+                                return;
+
                             case "Options":
                                 System.Diagnostics.Debug.WriteLine("Options Button Clicked");
                                 break;
@@ -65,6 +67,14 @@ namespace Pacman_CS
 
                             case "Quit":
                                 game.Exit();
+                                break;
+
+                            case "1player":
+                                game.ChangeState(new GameState(game, content, 1));
+                                break;
+
+                            case "2player":
+                                game.ChangeState(new GameState(game, content, 2));
                                 break;
                         }
                     }
