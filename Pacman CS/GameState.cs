@@ -10,14 +10,16 @@ namespace Pacman_CS
     {
         private Player player1;
         private Player player2;
+        private int numberOfPlayers;
         public Level level;
         public List<Ghost> ghosts = new List<Ghost>();
         public ScoreBoard scoreBoard;
 
         KeyboardState keyboardState;
 
-        public GameState(Game1 game, ContentManager content, int numberOfPlayers) : base(game, content)
+        public GameState(Game1 game, ContentManager content, int _numberOfPlayers) : base(game, content)
         {
+            numberOfPlayers = _numberOfPlayers;
             level = new Level(content);
             player1 = new Player(content, new Vector2(level.player1StartingLocation.X, level.player1StartingLocation.Y), "pacman1");
 
@@ -32,7 +34,7 @@ namespace Pacman_CS
                 ghosts.Add(new Ghost(content, position));
             }
 
-            scoreBoard = new ScoreBoard(content, 1);
+            scoreBoard = new ScoreBoard(content, numberOfPlayers);
 
             LoadContent();
         }
@@ -45,6 +47,7 @@ namespace Pacman_CS
         {
             keyboardState = Keyboard.GetState();
 
+            // Player 1 Input
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 player1.nextDirection = Player.Directions.Left;
@@ -62,74 +65,29 @@ namespace Pacman_CS
                 player1.nextDirection = Player.Directions.Down;
             }
 
-            float startingVelocityX = player1.velocity.X;
-            float startingVelocityY = player1.velocity.Y;
-            Vector2 startingPosition = player1.position;
-
-            player1.Update();
-            player2.Update();
-            
-            // Check new position collision
-            // If there is a collision, use old velocity and position
-            if (level.CheckCollision(new Rectangle((int)player1.position.X, (int)player1.position.Y, player1.size, player1.size)) == null)
+            // Player 2 Input
+            if (keyboardState.IsKeyDown(Keys.A))
             {
-                player1.nextDirection = Player.Directions.None;
+                player2.nextDirection = Player.Directions.Left;
             }
-            else
+            else if (keyboardState.IsKeyDown(Keys.D))
             {
-                player1.velocity.X = startingVelocityX;
-                player1.velocity.Y = startingVelocityY;
-                player1.position = startingPosition;
-
-                player1.position += player1.velocity;
-
-                Tile collisionTile = level.CheckCollision(new Rectangle((int)player1.position.X, (int)player1.position.Y, player1.size, player1.size));
-
-                if (collisionTile != null)
-                {
-                    // right
-                    if (player1.velocity.X > 0)
-                    {
-                        player1.position.X = collisionTile.position.X - player1.size;
-
-                        if (player1.nextDirection == Player.Directions.Right)
-                        {
-                            player1.nextDirection = Player.Directions.None;
-                        }
-
-                    }
-                    // left
-                    else if (player1.velocity.X < 0)
-                    {
-                        player1.position.X = collisionTile.position.X + collisionTile.width;
-
-                        if (player1.nextDirection == Player.Directions.Left)
-                        {
-                            player1.nextDirection = Player.Directions.None;
-                        }
-                    }
-                    // down
-                    else if (player1.velocity.Y > 0)
-                    {
-                        player1.position.Y = collisionTile.position.Y - player1.size;
-
-                        if (player1.nextDirection == Player.Directions.Down)
-                        {
-                            player1.nextDirection = Player.Directions.None;
-                        }
-                    }
-                    // up
-                    else if (player1.velocity.Y < 0)
-                    {
-                        player1.position.Y = collisionTile.position.Y + collisionTile.width;
-
-                        if (player1.nextDirection == Player.Directions.Up)
-                        {
-                            player1.nextDirection = Player.Directions.None;
-                        }
-                    }
-                }
+                player2.nextDirection = Player.Directions.Right;
             }
+            else if (keyboardState.IsKeyDown(Keys.W))
+            {
+                player2.nextDirection = Player.Directions.Up;
+            }
+            else if (keyboardState.IsKeyDown(Keys.S))
+            {
+                player2.nextDirection = Player.Directions.Down;
+            }
+
+            // Player Movement
+            playerMovement(player1);
+
+            if (numberOfPlayers == 2)
+                playerMovement(player2);
 
             // move?
             foreach (var ghost in ghosts)
@@ -139,8 +97,85 @@ namespace Pacman_CS
             }
 
             if (level.CheckPelletCollision(new Rectangle((int)player1.position.X, (int)player1.position.Y, player1.size, player1.size)))
-            {
                 scoreBoard.player1Score += 1;
+
+            if (numberOfPlayers == 2)
+            {
+                if (level.CheckPelletCollision(new Rectangle((int)player2.position.X, (int)player2.position.Y, player2.size, player2.size)))
+                    scoreBoard.player2Score += 1;
+            }
+        }
+
+
+        // temp refactor?
+        public void playerMovement(Player player)
+        {
+            float startingVelocityX = player.velocity.X;
+            float startingVelocityY = player.velocity.Y;
+            Vector2 startingPosition = player.position;
+
+            player.Update();
+
+            // Check new position collision
+            // If there is a collision, use old velocity and position
+            if (level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size)) == null)
+            {
+                player.nextDirection = Player.Directions.None;
+            }
+            else
+            {
+                player.velocity.X = startingVelocityX;
+                player.velocity.Y = startingVelocityY;
+                player.position = startingPosition;
+
+                player.position += player.velocity;
+
+                Tile collisionTile = level.CheckCollision(new Rectangle((int)player.position.X, (int)player.position.Y, player.size, player.size));
+
+                if (collisionTile != null)
+                {
+                    // right
+                    if (player.velocity.X > 0)
+                    {
+                        player.position.X = collisionTile.position.X - player.size;
+
+                        if (player.nextDirection == Player.Directions.Right)
+                        {
+                            player.nextDirection = Player.Directions.None;
+                        }
+
+                    }
+                    // left
+                    else if (player.velocity.X < 0)
+                    {
+                        player.position.X = collisionTile.position.X + collisionTile.width;
+
+                        if (player.nextDirection == Player.Directions.Left)
+                        {
+                            player.nextDirection = Player.Directions.None;
+                        }
+                    }
+                    // down
+                    else if (player.velocity.Y > 0)
+                    {
+                        player.position.Y = collisionTile.position.Y - player.size;
+
+                        if (player.nextDirection == Player.Directions.Down)
+                        {
+                            player.nextDirection = Player.Directions.None;
+                        }
+                    }
+                    // up
+                    else if (player.velocity.Y < 0)
+                    {
+                        player.position.Y = collisionTile.position.Y + collisionTile.width;
+
+                        if (player.nextDirection == Player.Directions.Up)
+                        {
+                            player.nextDirection = Player.Directions.None;
+                        }
+                    }
+                }
             }
         }
 
