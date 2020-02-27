@@ -131,7 +131,7 @@ namespace Pacman_CS
             // If there is a collision, use old velocity and position
             if (level.CheckCollision(new Rectangle((int)ghost.position.X, (int)ghost.position.Y, ghost.size, ghost.size)) == null)
             {
-                ghost.nextDirection = Ghost.Directions.None;
+                ghost.nextDirection = ghost.RandomDirection();
             }
             else
             {
@@ -149,43 +149,24 @@ namespace Pacman_CS
                     if (ghost.velocity.X > 0)
                     {
                         ghost.position.X = collisionTile.position.X - ghost.size;
-
-                        if (ghost.nextDirection == Ghost.Directions.Right)
-                        {
-                            ghost.nextDirection = Ghost.Directions.None;
-                        }
-
                     }
                     // left
                     else if (ghost.velocity.X < 0)
                     {
                         ghost.position.X = collisionTile.position.X + collisionTile.width;
-
-                        if (ghost.nextDirection == Ghost.Directions.Left)
-                        {
-                            ghost.nextDirection = Ghost.Directions.None;
-                        }
                     }
                     // down
                     else if (ghost.velocity.Y > 0)
                     {
                         ghost.position.Y = collisionTile.position.Y - ghost.size;
-
-                        if (ghost.nextDirection == Ghost.Directions.Down)
-                        {
-                            ghost.nextDirection = Ghost.Directions.None;
-                        }
                     }
                     // up
                     else if (ghost.velocity.Y < 0)
                     {
                         ghost.position.Y = collisionTile.position.Y + collisionTile.width;
-
-                        if (ghost.nextDirection == Ghost.Directions.Up)
-                        {
-                            ghost.nextDirection = Ghost.Directions.None;
-                        }
                     }
+
+                    ghost.nextDirection = ghost.RandomDirection();
                 }
             }
         }

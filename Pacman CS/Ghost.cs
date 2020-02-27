@@ -12,8 +12,8 @@ namespace Pacman_CS
         public Texture2D[] image = new Texture2D[2];
         public int size = 32;
 
-        public enum Directions { Up, Down, Left, Right, None };
-        public Directions nextDirection = Directions.None;
+        public enum Directions { Up, Down, Left, Right,};
+        public Directions nextDirection = Directions.Up;
 
         private int ghostSpeed = 2;
 
@@ -23,7 +23,7 @@ namespace Pacman_CS
         // Pacman can eat ghost if ghost is scared.
         public bool scared = false;
 
-        Random random = new Random();
+        static Random random = new Random();
 
         public Vector2 origin;
 
@@ -31,7 +31,6 @@ namespace Pacman_CS
         {
             image[0] = _content.Load<Texture2D>("ghost1");
             image[1] = _content.Load<Texture2D>("ghost2");
-
 
             position = _startingLocation;
             velocity = new Vector2(0, 0);
@@ -63,19 +62,8 @@ namespace Pacman_CS
                 velocity.Y = ghostSpeed;
                 velocity.X = 0;
             }
-            else if (nextDirection == Directions.None)
-            {
-                int rand = random.Next(0, 4);
 
-                if (rand == 0)
-                    nextDirection = Directions.Up;
-                else if (rand == 1)
-                    nextDirection = Directions.Down;
-                else if (rand == 2)
-                    nextDirection = Directions.Left;
-                else if (rand == 3)
-                    nextDirection = Directions.Right;
-            }
+            System.Diagnostics.Debug.WriteLine(nextDirection);
 
             position += velocity;
 
@@ -88,27 +76,23 @@ namespace Pacman_CS
                 spriteIndex = 1;
         }
 
+        public Directions RandomDirection()
+        {
+            int rand = random.Next(0, 4);
+
+            if (rand == 0)
+                return Directions.Up;
+            else if (rand == 1)
+                return Directions.Down;
+            else if (rand == 2)
+                return Directions.Left;
+            else
+                return Directions.Right;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (velocity.X > 0)
-            {
-                spriteBatch.Draw(image[spriteIndex], position);
-            }
-            else if (velocity.X < 0)
-            {
-                spriteBatch.Draw(image[spriteIndex], position + new Vector2(16, 16), null, Color.White, (float)(180 * (Math.PI / 180)), origin, 1.0f, SpriteEffects.None, 0);
-            }
-            else if (velocity.Y > 0)
-            {
-                spriteBatch.Draw(image[spriteIndex], position + new Vector2(16, 16), null, Color.White, (float)(90 * (Math.PI / 180)), origin, 1.0f, SpriteEffects.None, 0);
-
-            }
-            else if (velocity.Y < 0)
-            {
-                spriteBatch.Draw(image[spriteIndex], position + new Vector2(16, 16), null, Color.White, (float)(270 * (Math.PI / 180)), origin, 1.0f, SpriteEffects.None, 0);
-            }
-            else
-                spriteBatch.Draw(image[spriteIndex], position);
+            spriteBatch.Draw(image[spriteIndex], position);
         }
     }
 }
