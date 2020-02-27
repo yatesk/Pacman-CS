@@ -23,6 +23,8 @@ namespace Pacman_CS
         // Pacman can eat ghost if ghost is scared.
         public bool scared = false;
 
+        Random random = new Random();
+
         public Vector2 origin;
 
         public Ghost(ContentManager _content, Vector2 _startingLocation)
@@ -34,39 +36,48 @@ namespace Pacman_CS
             position = _startingLocation;
             velocity = new Vector2(0, 0);
 
-            nextDirection = Directions.None;
-
+            nextDirection = Directions.Up;
 
             origin = new Vector2(image[0].Width / 2f, image[0].Height / 2f);
         }
 
         public void Update()
         {
+            if (nextDirection == Directions.Left)
+            {
+                velocity.X = -ghostSpeed;
+                velocity.Y = 0;
+            }
+            else if (nextDirection == Directions.Right)
+            {
+                velocity.X = ghostSpeed;
+                velocity.Y = 0;
+            }
+            else if (nextDirection == Directions.Up)
+            {
+                velocity.Y = -ghostSpeed;
+                velocity.X = 0;
+            }
+            else if (nextDirection == Directions.Down)
+            {
+                velocity.Y = ghostSpeed;
+                velocity.X = 0;
+            }
+            else if (nextDirection == Directions.None)
+            {
+                int rand = random.Next(0, 4);
 
-            //if (nextDirection == Directions.Left)
-            //{
-            //    velocity.X = -playerSpeed;
-            //    velocity.Y = 0;
-            //}
-            //else if (nextDirection == Directions.Right)
-            //{
-            //    velocity.X = playerSpeed;
-            //    velocity.Y = 0;
-            //}
-            //else if (nextDirection == Directions.Up)
-            //{
-            //    velocity.Y = -playerSpeed;
-            //    velocity.X = 0;
-            //}
-            //else if (nextDirection == Directions.Down)
-            //{
-            //    velocity.Y = playerSpeed;
-            //    velocity.X = 0;
-            //}
+                if (rand == 0)
+                    nextDirection = Directions.Up;
+                else if (rand == 1)
+                    nextDirection = Directions.Down;
+                else if (rand == 2)
+                    nextDirection = Directions.Left;
+                else if (rand == 3)
+                    nextDirection = Directions.Right;
+            }
 
-            //position += velocity;
-
-
+            position += velocity;
 
             // refactor animations
             frameCount += 1;
@@ -75,7 +86,6 @@ namespace Pacman_CS
                 spriteIndex = 0;
             else if (frameCount % 60 < 60)
                 spriteIndex = 1;
-
         }
 
         public void Draw(SpriteBatch spriteBatch)

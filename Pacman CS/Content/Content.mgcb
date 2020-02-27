@@ -104,6 +104,12 @@
 /processorParam:TextureFormat=Color
 /build:open.png
 
+#begin pacman_beginning.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pacman_beginning.wav
+
 #begin pacman1-1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -206,6 +212,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:scoreBoardFont.spritefont
+
+#begin Sounds/pacman_beginning.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/pacman_beginning.wav
+
+#begin Sounds/pacman_chomp.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/pacman_chomp.wav
 
 #begin titleFont.spritefont
 /importer:FontDescriptionImporter

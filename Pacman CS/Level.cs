@@ -120,6 +120,8 @@ namespace Pacman_CS
                 {
                     if (level[i][j] == '*')
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Wall));
+                    else if (level[i][j] == '0')
+                        tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));
                     else if (level[i][j] == 'A')
                     {
                         tiles.Add(new Tile(new Vector2(32 * j, 32 * i + topMargin), 32, 32, Tile.TileType.Open));

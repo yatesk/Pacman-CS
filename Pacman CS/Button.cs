@@ -36,7 +36,6 @@ namespace Pacman_CS
 
             middleTexture = _middleTexture;
             middleTexturePosition = new Vector2(position.X + (buttonTexture.Width / 2) - (middleTexture.Width / 2), position.Y + (buttonTexture.Height / 2) - (middleTexture.Height / 2));
-
         }
 
         public Button(string _textureName, Vector2 _position, ContentManager content)

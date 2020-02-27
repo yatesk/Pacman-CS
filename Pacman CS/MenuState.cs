@@ -80,6 +80,13 @@ namespace Pacman_CS
                     }
                 }
             }
+            else
+            {
+                foreach (var button in buttons)
+                {
+                    button.Update(currentMouseState.X, currentMouseState.Y);
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

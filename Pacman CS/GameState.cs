@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Pacman_CS
 {
@@ -16,6 +17,9 @@ namespace Pacman_CS
         public ScoreBoard scoreBoard;
 
         KeyboardState keyboardState;
+        SoundEffect pacmanIntro;
+
+        //SoundEffect pacmanChomp;
 
         public GameState(Game1 game, ContentManager content, int _numberOfPlayers) : base(game, content)
         {
@@ -27,7 +31,6 @@ namespace Pacman_CS
             {
                 player2 = new Player(content, new Vector2(level.player2StartingLocation.X, level.player2StartingLocation.Y), "pacman2");
             }
-
 
             foreach (var position in level.ghostStartingLocations)
             {
@@ -41,6 +44,16 @@ namespace Pacman_CS
 
         public override void LoadContent()
         {
+            pacmanIntro = content.Load<SoundEffect>(@"Sounds\pacman_beginning");
+
+            // .1f is the volume (0-1)
+            pacmanIntro.Play(.1f, 0, 0);
+
+            //pacmanChomp = content.Load<SoundEffect>(@"Sounds\pacman_chomp");
+            //var instance = pacmanChomp.CreateInstance();
+            //instance.IsLooped = true;
+            //instance.Volume = .1f;
+            //instance.Play();
         }
 
         public override void Update(GameTime gameTime)
@@ -92,8 +105,7 @@ namespace Pacman_CS
             // move?
             foreach (var ghost in ghosts)
             {
-                ghost.Update();
-                
+                ghostMovement(ghost);
             }
 
             if (level.CheckPelletCollision(new Rectangle((int)player1.position.X, (int)player1.position.Y, player1.size, player1.size)))
@@ -106,6 +118,77 @@ namespace Pacman_CS
             }
         }
 
+
+        public void ghostMovement(Ghost ghost)
+        {
+            float startingVelocityX = ghost.velocity.X;
+            float startingVelocityY = ghost.velocity.Y;
+            Vector2 startingPosition = ghost.position;
+
+            ghost.Update();
+
+            // Check new position collision
+            // If there is a collision, use old velocity and position
+            if (level.CheckCollision(new Rectangle((int)ghost.position.X, (int)ghost.position.Y, ghost.size, ghost.size)) == null)
+            {
+                ghost.nextDirection = Ghost.Directions.None;
+            }
+            else
+            {
+                ghost.velocity.X = startingVelocityX;
+                ghost.velocity.Y = startingVelocityY;
+                ghost.position = startingPosition;
+
+                ghost.position += ghost.velocity;
+
+                Tile collisionTile = level.CheckCollision(new Rectangle((int)ghost.position.X, (int)ghost.position.Y, ghost.size, ghost.size));
+
+                if (collisionTile != null)
+                {
+                    // right
+                    if (ghost.velocity.X > 0)
+                    {
+                        ghost.position.X = collisionTile.position.X - ghost.size;
+
+                        if (ghost.nextDirection == Ghost.Directions.Right)
+                        {
+                            ghost.nextDirection = Ghost.Directions.None;
+                        }
+
+                    }
+                    // left
+                    else if (ghost.velocity.X < 0)
+                    {
+                        ghost.position.X = collisionTile.position.X + collisionTile.width;
+
+                        if (ghost.nextDirection == Ghost.Directions.Left)
+                        {
+                            ghost.nextDirection = Ghost.Directions.None;
+                        }
+                    }
+                    // down
+                    else if (ghost.velocity.Y > 0)
+                    {
+                        ghost.position.Y = collisionTile.position.Y - ghost.size;
+
+                        if (ghost.nextDirection == Ghost.Directions.Down)
+                        {
+                            ghost.nextDirection = Ghost.Directions.None;
+                        }
+                    }
+                    // up
+                    else if (ghost.velocity.Y < 0)
+                    {
+                        ghost.position.Y = collisionTile.position.Y + collisionTile.width;
+
+                        if (ghost.nextDirection == Ghost.Directions.Up)
+                        {
+                            ghost.nextDirection = Ghost.Directions.None;
+                        }
+                    }
+                }
+            }
+        }
 
         // temp refactor?
         public void playerMovement(Player player)
@@ -143,7 +226,6 @@ namespace Pacman_CS
                         {
                             player.nextDirection = Player.Directions.None;
                         }
-
                     }
                     // left
                     else if (player.velocity.X < 0)
